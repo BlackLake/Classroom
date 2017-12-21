@@ -42,7 +42,7 @@ public class Mesajlar extends Fragment{
         veriTabani=new VeriTabani(context);
         localVeriTabani=new LocalVeriTabani(context);
         veriTabani.tumKullanicilar();
-        kullanicilar=localVeriTabani.tumKullanicilariGetir();
+
 
 
 
@@ -65,6 +65,7 @@ public class Mesajlar extends Fragment{
             @Override
             public void onClick(View view) {
                 Fragment fragment=new MesajYazilacakKisiler(context);
+                MainActivity.tempFragment=fragment;
                 if (fragment!=null){
                     FragmentTransaction transaction=getFragmentManager().beginTransaction();
                     transaction.replace(Mesajlar.this.getId(), fragment);
@@ -72,8 +73,6 @@ public class Mesajlar extends Fragment{
                 }
             }
         });
-        listView=(ListView)view.findViewById(R.id.liste_mesajlar);
-        adapter=new OzelAdapter(context,kullanicilar);
-        listView.setAdapter(adapter);
+
     }
 }

@@ -4,22 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.classroom.classroom.MainActivity"
-    android:background="@color/arkaplan">
+    android:background="@color/arkaplan"
+    tools:context="com.example.classroom.classroom.MainActivity">
 
-
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            >
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -31,8 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    app:srcCompat="@drawable/user"
-                    />
+                    app:srcCompat="@drawable/user" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -41,49 +41,50 @@
 
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true">
+
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/kullanici_adi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/kullanici_adi">
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true">
 
 
                     <EditText
+                        android:id="@+id/kullanici_adi_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Kullanıcı Adı"
-                        android:id="@+id/kullanici_adi_text"
-                        android:textColor="#000"
-                        android:textSize="15sp"
                         android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:hint="Kullanıcı Adı"
+                        android:textColor="#000"
+                        android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:id="@id/sifre">
+                android:layout_height="match_parent">
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@id/sifre"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@id/sifre">
-
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true">
 
 
                     <EditText
+                        android:id="@+id/sifre_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Şifre"
-                        android:textColor="@color/yazi"
-                        android:textSize="15sp"
-                        android:id="@+id/sifre_text"
-                        android:inputType="textPassword"
                         android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"/>
+                        android:layout_centerVertical="true"
+                        android:hint="Şifre"
+                        android:inputType="textPassword"
+                        android:textColor="@color/yazi"
+                        android:textSize="15sp" />
                 </android.support.design.widget.TextInputLayout>
 
             </RelativeLayout>
@@ -100,8 +101,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
                     android:background="#fff"
-                    android:text="Giriş yap"
-                    >
+                    android:text="Giriş yap">
 
                 </Button>
 
@@ -112,18 +112,17 @@
                 android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/kayit_ol"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Üye olmak için buraya tıklayın... "
-                    android:textColor="@color/yazi"
-                    android:id="@+id/kayit_ol"
-                    android:layout_marginTop="30dp"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
-                    />
+                    android:layout_marginTop="30dp"
+                    android:text="Üye olmak için buraya tıklayın... "
+                    android:textColor="@color/yazi" />
 
             </RelativeLayout>
 
         </LinearLayout>
-    </RelativeLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>

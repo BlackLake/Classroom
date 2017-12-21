@@ -69,12 +69,16 @@ public class Anasayfa extends AppCompatActivity {
                     case R.id.mesajlar:
                         fragment=new Mesajlar(Anasayfa.this);
                         break;
+                    case R.id.gruplar:
+                        fragment=new Gruplar();
+                        break;
 
                 }
                 if (fragment!=null){
                     FragmentTransaction transaction=getFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_frame, fragment);
                     transaction.commit();
+                    MainActivity.tempFragment=fragment;
                 }
                 drawerLayout.closeDrawer(GravityCompat.START);
                 return true;

@@ -1,5 +1,6 @@
 package com.example.classroom.classroom;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Point;
 import android.support.annotation.NonNull;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Uyarilar uyarilar;
     private InternetKontrolu internetKontrolu;
     private VeriTabani veriTabani;
+    public static Fragment tempFragment=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,11 +65,11 @@ public class MainActivity extends AppCompatActivity {
                 kayit_ol=(TextView)findViewById(R.id.kayit_ol);
                 ekran.ekrana_ayarla(kayit_ol,(ekran.getGenislik()/10)*7);
 
-               /* l_kullanici_adi=(TextInputLayout)findViewById(R.id.kullanici_adi);
+                l_kullanici_adi=(TextInputLayout)findViewById(R.id.kullanici_adi);
                 l_sifre=(TextInputLayout)findViewById(R.id.sifre);
                 ekran.ekrana_ayarla(l_kullanici_adi,(ekran.getGenislik()/10)*8);
                 ekran.ekrana_ayarla(l_sifre,(ekran.getGenislik()/10)*8);
-*/
+
                 kullanici_adi_text=(EditText)findViewById(R.id.kullanici_adi_text);
                 sifre_text=(EditText)findViewById(R.id.sifre_text);
 
@@ -75,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         if (bosAlanKontrol(kullanici_adi_text.getText().toString().trim(),sifre_text.getText().toString().trim())){
-                            veriTabani.girisYap(kullanici_adi_text.getText().toString().trim(),sifre_text.getText().toString().trim());
+                            veriTabani.girisYap(kullanici_adi_text.getText().toString().trim()+"@ktu.edu.tr",sifre_text.getText().toString().trim());
                             kullanici_adi_text.setText("");
                             sifre_text.setText("");
                         }else{

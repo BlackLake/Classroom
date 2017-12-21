@@ -16,7 +16,15 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,12 +35,11 @@ import java.util.List;
 public class MesajYazilacakKisiler extends Fragment {
 
     private OzelAdapter adapter;
-    private List<String> kullanici_adlari;
     private List<Kullanici> kullanicilar;
-    private VeriTabani veriTabani;
     private LocalVeriTabani localVeriTabani;
     private ListView listView;
     private Activity context;
+    private VeriTabani veriTabani;
 
     @SuppressLint("ValidFragment")
     public MesajYazilacakKisiler(Activity context){
@@ -41,16 +48,10 @@ public class MesajYazilacakKisiler extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         veriTabani=new VeriTabani(context);
         localVeriTabani=new LocalVeriTabani(context);
         veriTabani.tumKullanicilar();
         kullanicilar=localVeriTabani.tumKullanicilariGetir();
-
-
-
-
 
     }
 
@@ -63,15 +64,9 @@ public class MesajYazilacakKisiler extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FloatingActionButton floatingActionButton=(FloatingActionButton)view.findViewById(R.id.fab);
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
         listView=(ListView)view.findViewById(R.id.liste_mesajlar);
         adapter=new OzelAdapter(context,kullanicilar);
         listView.setAdapter(adapter);
     }
+
 }

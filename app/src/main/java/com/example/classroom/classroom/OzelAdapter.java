@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -20,8 +21,9 @@ public class OzelAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private List<Kullanici> kullanicilar;
+    private Activity activity;
     public OzelAdapter(Activity activity, List<Kullanici> kullanicilar) {
-
+        this.activity=activity;
         mInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         this.kullanicilar = kullanicilar;
@@ -45,7 +47,7 @@ public class OzelAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, final View convertView, ViewGroup parent) {
         View satirView;
 
         satirView = mInflater.inflate(R.layout.satir_ici, null);
@@ -57,6 +59,12 @@ public class OzelAdapter extends BaseAdapter {
         }else{
             imageView.setImageResource(R.drawable.akademisyen);
         }
+        satirView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
         return satirView;

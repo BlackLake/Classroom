@@ -31,7 +31,6 @@ public class VeriTabani {
     private DatabaseReference reference;
     private FirebaseAuth giris;
     private FirebaseUser girisYapanKullanici;
-    private FirebaseAuth.AuthStateListener stateListener;
     private Context context;
     private Uyarilar uyarilar;
     private LocalVeriTabani localVeriTabani;
