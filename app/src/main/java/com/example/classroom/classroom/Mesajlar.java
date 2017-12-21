@@ -41,7 +41,6 @@ public class Mesajlar extends Fragment{
 
         veriTabani=new VeriTabani(context);
         localVeriTabani=new LocalVeriTabani(context);
-        veriTabani.tumKullanicilar();
 
 
 

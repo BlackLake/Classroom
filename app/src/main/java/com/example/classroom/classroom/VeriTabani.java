@@ -89,6 +89,7 @@ public class VeriTabani {
                 if (task.isSuccessful()){
                     uyarilar.uyariDurdur();
                     girisYapanKullanici();
+
                     context.startActivity(new Intent(context,Anasayfa.class));
                 }else{
                     uyarilar.uyariDurdur();
@@ -104,7 +105,6 @@ public class VeriTabani {
     public void girisYapanKullanici(){
 
         giris=FirebaseAuth.getInstance();
-        veritabani=FirebaseDatabase.getInstance();
         girisYapanKullanici=giris.getCurrentUser();
         reference=veritabani.getReference("kullanicilar/"+girisYapanKullanici.getUid());
 
@@ -112,11 +112,7 @@ public class VeriTabani {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 kullanici=dataSnapshot.getValue(Kullanici.class);
-                localVeriTabani.girisYapanKullaniciTut(girisYapanKullanici.getUid(),
-                        kullanici.getAd(),
-                        kullanici.getSoyad(),
-                        kullanici.getTur(),
-                        kullanici.getDegisken());
+                //localVeriTabani.girisYapanKullaniciTut(kullanici);
             }
 
             @Override

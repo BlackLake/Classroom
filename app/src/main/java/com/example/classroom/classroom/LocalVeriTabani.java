@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +23,8 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
 
     private static final String TABLE_KULLANICILAR="kullanicilar";
     private static final String TABLE_GIRIS_YAPAN="giris_yapan";
+    private static final String TABLE_MESAJ_GONDERILECEK_KULLANICI="mesaj_gonderilecek";
+
 
 
     private static final String SUTUN_KULLANICI_ID="kullanici_id";
@@ -39,23 +43,26 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
             ")";
 
     private String table_giris_yapan_kullanici="CREATE TABLE "+TABLE_GIRIS_YAPAN+"("
-            +SUTUN_KULLANICI_ID+" TEXT NOT NULL,"
-            +SUTUN_KULLANICI_ADI+" TEXT NOT NULL,"
-            +SUTUN_KULLANICI_SOYADI+" TEXT NOT NULL,"
-            +SUTUN_KULLANICI_TUR+" TEXT NOT NULL,"
-            +SUTUN_KULLANICI_DEGISKEN+" TEXT NOT NULL"+
+            +SUTUN_KULLANICI_ID+" TEXT,"
+            +SUTUN_KULLANICI_ADI+" TEXT,"
+            +SUTUN_KULLANICI_SOYADI+" TEXT,"
+            +SUTUN_KULLANICI_TUR+" TEXT,"
+            +SUTUN_KULLANICI_DEGISKEN+" TEXT"+
             ")";
+
+    private Context context;
 
 
     public LocalVeriTabani(Context context) {
         super(context, DATABASE_NAME, null, 1);
-
+        this.context=context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(table_kullanicilar);
         database.execSQL(table_giris_yapan_kullanici);
+
     }
 
     @Override
@@ -102,39 +109,22 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
         return kullanicilar;
     }
 
-    public void girisYapanKullaniciTut(String id,String ad,String soyad,String tur,String degisken){
-        SQLiteDatabase db=this.getWritableDatabase();
-        girisYapanTabloBosalt();
-        ContentValues values=new ContentValues();
-        values.put(SUTUN_KULLANICI_ID,id);
-        values.put(SUTUN_KULLANICI_ADI,ad);
-        values.put(SUTUN_KULLANICI_SOYADI,soyad);
-        values.put(SUTUN_KULLANICI_TUR,tur);
-        values.put(SUTUN_KULLANICI_DEGISKEN,degisken);
-        db.insert(TABLE_GIRIS_YAPAN,null,values);
-        db.close();
-    }
-    public Kullanici girisYapanKullanici(){
-        Kullanici kullanici=new Kullanici();
-        SQLiteDatabase db=this.getReadableDatabase();
-        String[] sutunlar={SUTUN_KULLANICI_ID,SUTUN_KULLANICI_ADI,SUTUN_KULLANICI_SOYADI,SUTUN_KULLANICI_TUR,SUTUN_KULLANICI_DEGISKEN};
-        Cursor cursor=db.query(TABLE_GIRIS_YAPAN,sutunlar,null,null,null,null,null);
-        while (cursor.moveToNext()){
-            kullanici.setId(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_ID)));
-            kullanici.setAd(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_ADI)));
-            kullanici.setSoyad(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_SOYADI)));
-            kullanici.setTur(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_TUR)));
-            kullanici.setDegisken(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_DEGISKEN)));
 
+
+    public Kullanici girisYapanKullanici(){
+        List<Kullanici> kullanicilar=tumKullanicilariGetir();
+        Kullanici girisyapan=new Kullanici();
+        for (int i=0;i<kullanicilar.size();i++){
+            if (FirebaseAuth.getInstance().getCurrentUser().getUid().equals(kullanicilar.get(i).getId())){
+                girisyapan=kullanicilar.get(i);
+                break;
+            }
         }
-        db.close();
-        return kullanici;
+        return girisyapan;
+
+
     }
-    private void girisYapanTabloBosalt(){
-        SQLiteDatabase db=this.getWritableDatabase();
-        db.execSQL("DROP TABLE "+TABLE_GIRIS_YAPAN);
-        db.execSQL(table_giris_yapan_kullanici);
-    }
+
 
 
 }

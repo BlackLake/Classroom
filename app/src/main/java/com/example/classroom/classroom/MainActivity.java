@@ -8,6 +8,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -76,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
                 giris_yap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
                         if (bosAlanKontrol(kullanici_adi_text.getText().toString().trim(),sifre_text.getText().toString().trim())){
+
                             veriTabani.girisYap(kullanici_adi_text.getText().toString().trim()+"@ktu.edu.tr",sifre_text.getText().toString().trim());
-                            kullanici_adi_text.setText("");
-                            sifre_text.setText("");
                         }else{
                             uyarilar.hata("Boş Alan var!");
                         }
@@ -89,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         startActivity(new Intent(MainActivity.this,UyeOl.class));
-                        finish();
 
                     }
                 });
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
         }catch (Exception e){
             uyarilar.uygulamaKapat();
         }
+        veriTabani.tumKullanicilar();
 
 
 

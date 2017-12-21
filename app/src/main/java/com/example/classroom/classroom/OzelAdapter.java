@@ -1,6 +1,8 @@
 package com.example.classroom.classroom;
 
 import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -62,6 +64,15 @@ public class OzelAdapter extends BaseAdapter {
         satirView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                Fragment fragment=new MesajAyrinti();
+
+                if (fragment!=null){
+                    FragmentTransaction transaction=activity.getFragmentManager().beginTransaction();
+                    transaction.replace(MainActivity.tempFragment.getId(), fragment);
+                    transaction.commit();
+                }
+                MainActivity.tempFragment=fragment;
 
             }
         });
