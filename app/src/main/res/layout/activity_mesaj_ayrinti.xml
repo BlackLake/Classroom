@@ -25,4 +25,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:clickable="false" />
+
+    <ListView
+        android:id="@+id/mesajlar_listesi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/mesaj" />
 </android.support.constraint.ConstraintLayout>

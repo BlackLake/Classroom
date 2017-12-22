@@ -14,6 +14,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthEmailException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -72,8 +73,20 @@ public class VeriTabani {
                                 uyarilar.uyariDurdur();
                             }
                         }else{
-                            uyarilar.kayitBasarisiz();
-                            uyarilar.uyariDurdur();
+                            try{
+                                uyarilar.kayitBasarisiz();
+                                uyarilar.uyariDurdur();
+                                throw task.getException();
+                            }catch (FirebaseAuthWeakPasswordException e){
+                                uyarilar.hata("Zayıf Parola!");
+                            }catch (FirebaseAuthEmailException e){
+                                uyarilar.hata("Geçersiz mail adresi!");
+                            } catch(FirebaseAuthUserCollisionException e) {
+                                uyarilar.hata("Aynı maile sahip kullanıcı mevcut!");
+                            } catch(Exception e) {
+                                Log.e(  "0", e.getMessage());
+                            }
+
                         }
                     }
                 });
@@ -88,12 +101,21 @@ public class VeriTabani {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()){
                     uyarilar.uyariDurdur();
-                    girisYapanKullanici();
-
                     context.startActivity(new Intent(context,Anasayfa.class));
                 }else{
                     uyarilar.uyariDurdur();
-                    uyarilar.hata("Girdiğiniz bilgilere ait bir kullanıcı bulunamadı!");
+
+                    try{
+                        uyarilar.hata("Giriş Yapılamadı!");
+                        throw task.getException();
+                    }catch (FirebaseAuthWeakPasswordException e){
+                        uyarilar.hata("Zayıf Parola!");
+                    }catch (FirebaseAuthEmailException e){
+                        uyarilar.hata("Hatalı mail!");
+                    } catch(Exception e) {
+                        Log.e(  "0", e.getMessage());
+                    }
+
 
                 }
             }
@@ -102,29 +124,12 @@ public class VeriTabani {
 
     }
 
-    public void girisYapanKullanici(){
-
-        giris=FirebaseAuth.getInstance();
-        girisYapanKullanici=giris.getCurrentUser();
-        reference=veritabani.getReference("kullanicilar/"+girisYapanKullanici.getUid());
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                kullanici=dataSnapshot.getValue(Kullanici.class);
-                //localVeriTabani.girisYapanKullaniciTut(kullanici);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
 
 
-    }
+
+
     public void tumKullanicilar(){
         girisYapanKullanici=giris.getCurrentUser();
         reference=veritabani.getReference("kullanicilar");
@@ -150,5 +155,32 @@ public class VeriTabani {
         context.startActivity(new Intent(context,MainActivity.class));
 
     }
+
+    public void mesajEkle(Mesaj mesaj){
+        veritabani=FirebaseDatabase.getInstance();
+        reference=veritabani.getReference("mesajlar");
+        reference.push().setValue(mesaj);
+    }
+	public void grupEkle(Grup gelenGrup)
+    {
+        uyarilar.uyariBaslat("","İşleminiz devam ediyor. Lütfen bekleyin...");
+        reference=veritabani.getReference("gruplar");
+        reference=reference.push();
+        gelenGrup.setId(reference.getKey());
+                reference.setValue(gelenGrup).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    uyarilar.uyariDurdur();
+                    context.startActivity(new Intent(context,Anasayfa.class));
+                }else{
+                    uyarilar.uyariDurdur();
+                    uyarilar.hata("İşleminiz Gerçekleştirilemedi");
+
+                }
+            }
+        });
+    }
+
 
 }

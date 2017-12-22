@@ -22,7 +22,6 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
     private static final String DATABASE_NAME="classroom.db";
 
     private static final String TABLE_KULLANICILAR="kullanicilar";
-    private static final String TABLE_GIRIS_YAPAN="giris_yapan";
     private static final String TABLE_MESAJ_GONDERILECEK_KULLANICI="mesaj_gonderilecek";
 
 
@@ -42,7 +41,7 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
             +SUTUN_KULLANICI_DEGISKEN+" TEXT NOT NULL"+
             ")";
 
-    private String table_giris_yapan_kullanici="CREATE TABLE "+TABLE_GIRIS_YAPAN+"("
+    private String table_mesaj_gonderilecek_kisi="CREATE TABLE "+TABLE_MESAJ_GONDERILECEK_KULLANICI+"("
             +SUTUN_KULLANICI_ID+" TEXT,"
             +SUTUN_KULLANICI_ADI+" TEXT,"
             +SUTUN_KULLANICI_SOYADI+" TEXT,"
@@ -61,14 +60,14 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(table_kullanicilar);
-        database.execSQL(table_giris_yapan_kullanici);
+        database.execSQL(table_mesaj_gonderilecek_kisi);
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int i, int i1) {
         database.execSQL("DROP TABLE IF EXISTS "+TABLE_KULLANICILAR);
-        database.execSQL("DROP TABLE IF EXISTS "+TABLE_GIRIS_YAPAN);
+        database.execSQL("DROP TABLE IF EXISTS "+TABLE_MESAJ_GONDERILECEK_KULLANICI);
         onCreate(database);
     }
 
@@ -123,6 +122,38 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
         return girisyapan;
 
 
+    }
+
+    public void mesajGonderilecekKisiEkle(Kullanici kullanici){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(SUTUN_KULLANICI_ID,kullanici.getId());
+        values.put(SUTUN_KULLANICI_ADI,kullanici.getAd());
+        values.put(SUTUN_KULLANICI_SOYADI,kullanici.getSoyad());
+        values.put(SUTUN_KULLANICI_TUR,kullanici.getTur());
+        values.put(SUTUN_KULLANICI_DEGISKEN,kullanici.getDegisken());
+        db.insert(TABLE_MESAJ_GONDERILECEK_KULLANICI,null,values);
+        db.close();
+    }
+    public Kullanici mesajGonderilecekKisi(){
+        Kullanici gonderilecek=new Kullanici();
+        SQLiteDatabase db=this.getReadableDatabase();
+        String[] sutunlar={SUTUN_KULLANICI_ID,SUTUN_KULLANICI_ADI,SUTUN_KULLANICI_SOYADI,SUTUN_KULLANICI_TUR,SUTUN_KULLANICI_DEGISKEN};
+        Cursor cursor=db.query(TABLE_MESAJ_GONDERILECEK_KULLANICI,sutunlar,null,null,null,null,null);
+        while (cursor.moveToNext()){
+            gonderilecek=new Kullanici();
+            gonderilecek.setId(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_ID)));
+            gonderilecek.setAd(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_ADI)));
+            gonderilecek.setSoyad(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_SOYADI)));
+            gonderilecek.setTur(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_TUR)));
+            gonderilecek.setDegisken(cursor.getString(cursor.getColumnIndex(SUTUN_KULLANICI_DEGISKEN)));
+        }
+        return gonderilecek;
+    }
+    public void mesajKisiTabloBosalt(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_MESAJ_GONDERILECEK_KULLANICI);
+        db.close();
     }
 
 

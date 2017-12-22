@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     }
 
     private boolean bosAlanKontrol(String mail,String sifre){

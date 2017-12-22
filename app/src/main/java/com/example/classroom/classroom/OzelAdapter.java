@@ -24,11 +24,13 @@ public class OzelAdapter extends BaseAdapter {
     private LayoutInflater mInflater;
     private List<Kullanici> kullanicilar;
     private Activity activity;
+    private LocalVeriTabani localVeriTabani;
     public OzelAdapter(Activity activity, List<Kullanici> kullanicilar) {
         this.activity=activity;
         mInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         this.kullanicilar = kullanicilar;
+        localVeriTabani=new LocalVeriTabani(activity.getApplicationContext());
     }
 
     @Override
@@ -68,11 +70,14 @@ public class OzelAdapter extends BaseAdapter {
                 Fragment fragment=new MesajAyrinti();
 
                 if (fragment!=null){
+                    localVeriTabani.mesajKisiTabloBosalt();
+                    localVeriTabani.mesajGonderilecekKisiEkle(kullanicilar.get(position));
                     FragmentTransaction transaction=activity.getFragmentManager().beginTransaction();
                     transaction.replace(MainActivity.tempFragment.getId(), fragment);
                     transaction.commit();
+                    MainActivity.tempFragment=fragment;
                 }
-                MainActivity.tempFragment=fragment;
+
 
             }
         });
