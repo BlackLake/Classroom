@@ -23,7 +23,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class VeriTabani {
@@ -74,7 +76,6 @@ public class VeriTabani {
                             }
                         }else{
                             try{
-                                uyarilar.kayitBasarisiz();
                                 uyarilar.uyariDurdur();
                                 throw task.getException();
                             }catch (FirebaseAuthWeakPasswordException e){
@@ -156,18 +157,42 @@ public class VeriTabani {
 
     }
 
-    public void mesajEkle(Mesaj mesaj){
+    public void mesajEkle(final MesajSablon mesaj){
         veritabani=FirebaseDatabase.getInstance();
         reference=veritabani.getReference("mesajlar");
         reference.push().setValue(mesaj);
+        DatabaseReference reference1=veritabani.getReference("kullanicilar/"+mesaj.getGondericiId());
+        reference1.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Kullanici kullanici=dataSnapshot.getValue(Kullanici.class);
+                String icerik=kullanici.getAd()+" "+kullanici.getSoyad()+" ' dan yeni mesajınız var";
+                SimpleDateFormat bicim=new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
+                Date tarih=new Date();
+                String zaman=bicim.format(tarih);
+                BildirimSablon bildirim=new BildirimSablon(mesaj.getAliciId(),mesaj.getGondericiId(),icerik,zaman);
+                bildirimEkle(bildirim);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
-	public void grupEkle(Grup gelenGrup)
+
+    private void bildirimEkle(BildirimSablon bildirimSablon){
+        reference=veritabani.getReference("bildirimler").push();
+        reference.setValue(bildirimSablon);
+
+    }
+    public void grupEkle(Grup gelenGrup)
     {
         uyarilar.uyariBaslat("","İşleminiz devam ediyor. Lütfen bekleyin...");
         reference=veritabani.getReference("gruplar");
         reference=reference.push();
         gelenGrup.setId(reference.getKey());
-                reference.setValue(gelenGrup).addOnCompleteListener(new OnCompleteListener<Void>() {
+        reference.setValue(gelenGrup).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if (task.isSuccessful()){
@@ -181,6 +206,51 @@ public class VeriTabani {
             }
         });
     }
+
+    public void tumGruplar(){
+        reference=veritabani.getReference("gruplar");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                    Grup grup=dataSnapshot1.getValue(Grup.class);
+                    localVeriTabani.grupEkle(grup);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void grupKayit(Grup gelenGrup)
+    {
+        GrupKullanici detay = new GrupKullanici();
+        detay.setKullaniciID(giris.getCurrentUser().getUid());
+        detay.setGrupID(gelenGrup.getId());
+
+        reference=veritabani.getReference("grup_detay");
+        reference=reference.push();
+        reference.setValue(detay);
+    }
+
+    public void tumGrupDetay(){
+        reference=veritabani.getReference("grup_detay");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                    GrupKullanici grupKullanici=dataSnapshot1.getValue(GrupKullanici.class);
+                    localVeriTabani.grupDetayEkle(grupKullanici);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
+
 
 
 }

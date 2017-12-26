@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 /**
@@ -18,6 +19,7 @@ public class GrupEkle extends Fragment {
 
     private VeriTabani veriTabani;
     private EditText textGrupAdi;
+    private LocalVeriTabani localVeriTabani;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -35,6 +37,7 @@ public class GrupEkle extends Fragment {
 
 
         textGrupAdi =(EditText)rootView.findViewById(R.id.grupAdi);
+        localVeriTabani=new LocalVeriTabani(getActivity().getApplicationContext());
 
         return  rootView;
     }
@@ -45,13 +48,18 @@ public class GrupEkle extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
 
-        FloatingActionButton fabGrupEkle = (FloatingActionButton)view.findViewById(R.id.fabGrupEkle);
-        fabGrupEkle.setOnClickListener(new View.OnClickListener() {
+        Button btn_grupEkle = (Button) view.findViewById(R.id.btn_grupekle);
+        btn_grupEkle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Grup yeniGrup=new Grup();
                 yeniGrup.setAd(textGrupAdi.getText().toString().trim());
                 veriTabani.grupEkle(yeniGrup);
+
+                localVeriTabani.girilecekGrupTabloBosalt();
+                localVeriTabani.girilecekGrupEkle(yeniGrup);
+                veriTabani.grupKayit(localVeriTabani.girilecekGrup());
 
             }
         });

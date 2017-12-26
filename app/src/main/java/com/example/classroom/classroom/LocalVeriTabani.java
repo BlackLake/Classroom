@@ -23,6 +23,9 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
 
     private static final String TABLE_KULLANICILAR="kullanicilar";
     private static final String TABLE_MESAJ_GONDERILECEK_KULLANICI="mesaj_gonderilecek";
+    private static final String TABLE_GRUPLAR="gruplar";
+    private static final String TABLE_GIRILECEK_GRUP="girilecek_grup";
+    private static final String TABLE_GRUP_DETAY="grup_detay";
 
 
 
@@ -31,6 +34,9 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
     private static final String SUTUN_KULLANICI_SOYADI="kullanici_soyadi";
     private static final String SUTUN_KULLANICI_TUR="kullanici_tur";
     private static final String SUTUN_KULLANICI_DEGISKEN="kullanici_degisken";
+
+    private static final String SUTUN_GRUP_ID="grup_id";
+    private static final String SUTUN_GRUP_ADI="grup_adi";
 
 
     private String table_kullanicilar="CREATE TABLE "+TABLE_KULLANICILAR+"("
@@ -49,6 +55,23 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
             +SUTUN_KULLANICI_DEGISKEN+" TEXT"+
             ")";
 
+    private String table_gruplar="CREATE TABLE "+TABLE_GRUPLAR+"("
+            +SUTUN_GRUP_ID+" TEXT PRIMARY KEY,"
+            +SUTUN_GRUP_ADI+" TEXT"+
+            ")";
+
+    private String table_girilecek_grup="CREATE TABLE "+TABLE_GIRILECEK_GRUP+"("
+            +SUTUN_GRUP_ID+" TEXT,"
+            +SUTUN_GRUP_ADI+" TEXT"+
+            ")";
+
+    private String table_grup_detay="CREATE TABLE "+TABLE_GRUP_DETAY+"("
+            +SUTUN_GRUP_ID+" TEXT NOT NULL,"
+            +SUTUN_KULLANICI_ID+" TEXT NOT NULL"+
+            ")";
+
+
+
     private Context context;
 
 
@@ -61,6 +84,9 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(table_kullanicilar);
         database.execSQL(table_mesaj_gonderilecek_kisi);
+        database.execSQL(table_gruplar);
+        database.execSQL(table_girilecek_grup);
+        database.execSQL(table_grup_detay);
 
     }
 
@@ -68,6 +94,9 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
     public void onUpgrade(SQLiteDatabase database, int i, int i1) {
         database.execSQL("DROP TABLE IF EXISTS "+TABLE_KULLANICILAR);
         database.execSQL("DROP TABLE IF EXISTS "+TABLE_MESAJ_GONDERILECEK_KULLANICI);
+        database.execSQL("DROP TABLE IF EXISTS "+TABLE_GRUPLAR);
+        database.execSQL("DROP TABLE IF EXISTS "+TABLE_GIRILECEK_GRUP);
+        database.execSQL("DROP TABLE IF EXISTS "+TABLE_GRUP_DETAY);
         onCreate(database);
     }
 
@@ -135,6 +164,7 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
         db.insert(TABLE_MESAJ_GONDERILECEK_KULLANICI,null,values);
         db.close();
     }
+
     public Kullanici mesajGonderilecekKisi(){
         Kullanici gonderilecek=new Kullanici();
         SQLiteDatabase db=this.getReadableDatabase();
@@ -150,10 +180,97 @@ public class LocalVeriTabani extends SQLiteOpenHelper{
         }
         return gonderilecek;
     }
+
     public void mesajKisiTabloBosalt(){
         SQLiteDatabase db=this.getWritableDatabase();
         db.execSQL("DELETE FROM "+TABLE_MESAJ_GONDERILECEK_KULLANICI);
         db.close();
+    }
+
+    public void grupEkle(Grup grup){
+        try {
+            SQLiteDatabase db=this.getWritableDatabase();
+            ContentValues values=new ContentValues();
+            values.put(SUTUN_GRUP_ID,grup.getId());
+            values.put(SUTUN_GRUP_ADI,grup.getAd());
+            db.insert(TABLE_GRUPLAR,null,values);
+            db.close();
+        }catch (Exception e){
+
+        }
+    }
+
+    public List<Grup> tumGruplariGetir(){
+        List<Grup> gruplar=new ArrayList<>();
+        SQLiteDatabase db=this.getReadableDatabase();
+        String[] sutunlar={SUTUN_GRUP_ID,SUTUN_GRUP_ADI};
+        Cursor cursor=db.query(TABLE_GRUPLAR,sutunlar,null,null,null,null,null);
+        while (cursor.moveToNext()){
+            Grup grup = new Grup();
+            grup.setId(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ID)));
+            grup.setAd(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ADI)));
+            gruplar.add(grup);
+
+        }
+        return gruplar;
+    }
+
+    public void girilecekGrupEkle(Grup grup){
+        SQLiteDatabase db=this.getWritableDatabase();
+        ContentValues values=new ContentValues();
+        values.put(SUTUN_GRUP_ID,grup.getId());
+        values.put(SUTUN_GRUP_ADI,grup.getAd());
+        db.insert(TABLE_GIRILECEK_GRUP,null,values);
+        db.close();
+    }
+    public Grup girilecekGrup(){
+        Grup girilecek=new Grup();
+        SQLiteDatabase db=this.getReadableDatabase();
+        String[] sutunlar={SUTUN_GRUP_ID,SUTUN_GRUP_ADI};
+        Cursor cursor=db.query(TABLE_GIRILECEK_GRUP,sutunlar,null,null,null,null,null);
+        while (cursor.moveToNext()){
+            girilecek=new Grup();
+            girilecek.setId(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ID)));
+            girilecek.setAd(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ADI)));
+        }
+        return girilecek;
+    }
+    public void girilecekGrupTabloBosalt(){
+        SQLiteDatabase db=this.getWritableDatabase();
+        db.execSQL("DELETE FROM "+TABLE_GIRILECEK_GRUP);
+        db.close();
+    }
+//////////////////////////////////////////////////////////////////////////
+
+    public void grupDetayEkle(GrupKullanici grupKullanici){
+        try {
+            SQLiteDatabase db=this.getWritableDatabase();
+            ContentValues values=new ContentValues();
+            values.put(SUTUN_GRUP_ID,grupKullanici.getGrupID());
+            values.put(SUTUN_KULLANICI_ID,grupKullanici.getKullaniciID());
+            db.insert(TABLE_GRUP_DETAY,null,values);
+            //db.execSQL("INSERT INTO "+TABLE_GRUP_DETAY+"("+SUTUN_GRUP_ID+","+SUTUN_KULLANICI_ID+") SELECT '"+ grupKullanici.getGrupID()+"','"+grupKullanici.getKullaniciID()+"' WHERE NOT EXISTS(SELECT 1 FROM "+TABLE_GRUP_DETAY+" WHERE "+SUTUN_GRUP_ID+"='"+grupKullanici.getGrupID()+"' AND "+SUTUN_KULLANICI_ID+"='"+grupKullanici.getKullaniciID()+"')",null);
+            db.close();
+        }catch (Exception e){
+
+        }
+    }
+
+    public List<Grup> kullaniciGruplariniGetir(){
+
+        Kullanici girisYapanKullanici=girisYapanKullanici();
+        List<Grup> gruplar=new ArrayList<>();
+        SQLiteDatabase db=this.getReadableDatabase();
+        Cursor cursor=db.rawQuery("SELECT DISTINCT "+TABLE_GRUPLAR+"."+SUTUN_GRUP_ID+", "+TABLE_GRUPLAR+"."+SUTUN_GRUP_ADI+", "+TABLE_GRUP_DETAY+"."+SUTUN_KULLANICI_ID+" FROM "+TABLE_GRUPLAR+" INNER JOIN "+TABLE_GRUP_DETAY+" ON "+TABLE_GRUPLAR+"."+SUTUN_GRUP_ID+" = "+TABLE_GRUP_DETAY+"."+SUTUN_GRUP_ID+" WHERE "+TABLE_GRUP_DETAY+"."+SUTUN_KULLANICI_ID+" = '"+girisYapanKullanici.getId()+"'",null);/*
+        Cursor cursor=db.rawQuery("SELECT "+TABLE_GRUPLAR+"."+SUTUN_GRUP_ID+", "+TABLE_GRUPLAR+"."+SUTUN_GRUP_ADI+", "+TABLE_GRUP_DETAY+"."+SUTUN_KULLANICI_ID+" FROM "+TABLE_GRUPLAR+" INNER JOIN "+TABLE_GRUP_DETAY+" ON ("+TABLE_GRUPLAR+"."+SUTUN_GRUP_ID+" = "+TABLE_GRUP_DETAY+"."+SUTUN_GRUP_ID+")",null);*/
+        while (cursor.moveToNext()){
+            Grup grup = new Grup();
+            grup.setId(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ID)));
+            grup.setAd(cursor.getString(cursor.getColumnIndex(SUTUN_GRUP_ADI)));
+            gruplar.add(grup);
+
+        }
+        return gruplar;
     }
 
 

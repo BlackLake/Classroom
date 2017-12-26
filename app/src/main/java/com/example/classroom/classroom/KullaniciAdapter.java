@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,13 +20,13 @@ import java.util.List;
  * Created by Fatih on 8.08.2017.
  */
 
-public class OzelAdapter extends BaseAdapter {
+public class KullaniciAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
     private List<Kullanici> kullanicilar;
     private Activity activity;
     private LocalVeriTabani localVeriTabani;
-    public OzelAdapter(Activity activity, List<Kullanici> kullanicilar) {
+    public KullaniciAdapter(Activity activity, List<Kullanici> kullanicilar) {
         this.activity=activity;
         mInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
@@ -53,7 +54,6 @@ public class OzelAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, final View convertView, ViewGroup parent) {
         View satirView;
-
         satirView = mInflater.inflate(R.layout.satir_ici, null);
         TextView textView =(TextView) satirView.findViewById(R.id.textView2);
         ImageView imageView =(ImageView) satirView.findViewById(R.id.simge);
@@ -67,16 +67,13 @@ public class OzelAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
 
-                Fragment fragment=new MesajAyrinti();
 
-                if (fragment!=null){
-                    localVeriTabani.mesajKisiTabloBosalt();
-                    localVeriTabani.mesajGonderilecekKisiEkle(kullanicilar.get(position));
-                    FragmentTransaction transaction=activity.getFragmentManager().beginTransaction();
-                    transaction.replace(MainActivity.tempFragment.getId(), fragment);
-                    transaction.commit();
-                    MainActivity.tempFragment=fragment;
-                }
+
+
+                localVeriTabani.mesajKisiTabloBosalt();
+                localVeriTabani.mesajGonderilecekKisiEkle(kullanicilar.get(position));
+                activity.startActivity(new Intent(activity,MesajAyrinti.class));
+
 
 
             }

@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -26,7 +27,8 @@ import java.util.ArrayList;
 public class UyeOl extends AppCompatActivity {
 
     private EditText isim,mail,sifre,sifreTekrar,soyisim;
-    private TextInputLayout l_isim,l_mail,l_sifre,l_sifreTekrar,l_soyisim;
+    private TextInputLayout l_isim,l_sifre,l_sifreTekrar,l_soyisim;
+    private LinearLayout linearLayout;
     private Button button_uyeOl;
     private EkranBoyutu ekran;
     private VeriTabani veriTabani;
@@ -60,17 +62,17 @@ public class UyeOl extends AppCompatActivity {
 
         //TextınputLayout
         l_isim=(TextInputLayout) findViewById(R.id.isim);
-        l_mail=(TextInputLayout)findViewById(R.id.mail);
+        l_soyisim=(TextInputLayout)findViewById(R.id.soyisim);
+        linearLayout=(LinearLayout) findViewById(R.id.linear);
         l_sifre=(TextInputLayout)findViewById(R.id.sifre);
         l_sifreTekrar=(TextInputLayout)findViewById(R.id.sifretekrar);
-        l_soyisim=(TextInputLayout)findViewById(R.id.soyisim);
 
 
 
         //eleman boyutları
         ekran=new EkranBoyutu(this);
         ekran.ekrana_ayarla(l_isim,(ekran.getGenislik()/10)*8);
-        ekran.ekrana_ayarla(l_mail,(ekran.getGenislik()/10)*8);
+        ekran.ekrana_ayarla(linearLayout,(ekran.getGenislik()/10)*8);
         ekran.ekrana_ayarla(l_sifre,(ekran.getGenislik()/10)*8);
         ekran.ekrana_ayarla(l_sifreTekrar,(ekran.getGenislik()/10)*8);
         ekran.ekrana_ayarla(l_soyisim,(ekran.getGenislik()/10)*8);
@@ -107,7 +109,7 @@ public class UyeOl extends AppCompatActivity {
                                     ,
                                     isim.getText().toString().trim(),
                                     soyisim.getText().toString().trim(),
-                                    mail.getText().toString().trim(),
+                                    mail.getText().toString().trim()+"@ktu.edu.tr",
                                     sifre.getText().toString().trim(),
                                     spinner.getSelectedItem().toString().trim()
                             );

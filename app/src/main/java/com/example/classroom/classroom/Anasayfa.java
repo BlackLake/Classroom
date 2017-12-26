@@ -3,6 +3,7 @@ package com.example.classroom.classroom;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -23,6 +24,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Anasayfa extends AppCompatActivity {
+
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBar;
@@ -71,7 +73,13 @@ public class Anasayfa extends AppCompatActivity {
                         fragment=new Mesajlar(Anasayfa.this);
                         break;
                     case R.id.gruplar:
-                        fragment=new Gruplar();
+                        fragment=new Gruplar(Anasayfa.this);
+                        break;
+                    case R.id.bildirimler:
+                        fragment=new Bildirimler();
+                        break;
+                    case R.id.sifreDegistir:
+                        fragment=new SifreDegistir();
                         break;
 
                 }
@@ -111,5 +119,12 @@ public class Anasayfa extends AppCompatActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish();
+    }
 }
