@@ -10,12 +10,14 @@ import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,7 +73,7 @@ public class GrupIcerik extends Fragment {
         paylasimAdapter=new PaylasimAdapter(context,paylasimlar);//////////////////////////////
         listView.setAdapter(paylasimAdapter);
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton) view.findViewById(R.id.fabPaylasimYap);
+        Button floatingActionButton = (Button) view.findViewById(R.id.fabPaylasimYap);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

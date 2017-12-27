@@ -33,7 +33,6 @@
         android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:layout_weight="0.2"
         android:background="@drawable/gonder_linearlayout">
 
         <EditText

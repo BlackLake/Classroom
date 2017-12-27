@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class Acilis extends Fragment {
     private ImageView pp;
-    private TextView t1,t2,t3,t4,t5;
+    private TextView t1,t2,t3,t4;
     private LocalVeriTabani localVeriTabani;
     private Kullanici user;
     private FirebaseUser kullanici;
@@ -43,12 +43,9 @@ public class Acilis extends Fragment {
         t4=(TextView)view.findViewById(R.id.textView12);
         t4.setText(user.getTur());
         pp=(ImageView)view.findViewById(R.id.imageView);
-        t5=(TextView)view.findViewById(R.id.textView7);
         if (user.getTur().equals("ÖĞRENCİ")) {
-            t5.setText("SINIF: ");
             pp.setImageResource(R.drawable.ogrenci);
         }else{
-            t5.setText("UNVAN: ");
             pp.setImageResource(R.drawable.akademisyen);
         }
 
