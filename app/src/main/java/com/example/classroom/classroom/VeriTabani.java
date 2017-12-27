@@ -250,6 +250,41 @@ public class VeriTabani {
         });
     }
 
+    public void paylasimYap(Paylasim gelenPaylasim)
+    {
+        uyarilar.uyariBaslat("","İşleminiz devam ediyor. Lütfen bekleyin...");
+        reference=veritabani.getReference("paylasim");
+        reference=reference.push();
+        reference.setValue(gelenPaylasim).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()){
+                    uyarilar.uyariDurdur();
+                }else{
+                    uyarilar.uyariDurdur();
+                    uyarilar.hata("İşleminiz Gerçekleştirilemedi");
+
+                }
+            }
+        });
+    }
+
+    public void tumPaylasimlar(){
+        reference=veritabani.getReference("paylasim");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot dataSnapshot1:dataSnapshot.getChildren()){
+                    Paylasim paylasim=dataSnapshot1.getValue(Paylasim.class);
+                    localVeriTabani.paylasimEkle(paylasim);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
 
 
 

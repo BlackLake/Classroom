@@ -24,17 +24,23 @@ import java.util.List;
 @SuppressLint("ValidFragment")
 public class Gruplar extends Fragment{
 
-    Kullanici kullanici;
-    LocalVeriTabani localVeriTabani;
+    private Kullanici kullanici;
+    private LocalVeriTabani localVeriTabani;
     private GrupAdapter grupAdapter;
     private List<Grup> gruplar;
     private ListView listView;
     private Activity context;
     private VeriTabani veriTabani;
+    private Grup grup=null;
 
     @SuppressLint("ValidFragment")
     public Gruplar(Activity context) {
         this.context = context;
+    }
+
+    public Gruplar(Activity context, Grup grup) {
+        this.context = context;
+        this.grup=grup;
     }
 
 
@@ -59,8 +65,12 @@ public class Gruplar extends Fragment{
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (grup!=null)
+        {
+            gruplar.add(grup);
+        }
         listView=(ListView)view.findViewById(R.id.grupList);
-        grupAdapter=new GrupAdapter(context,gruplar,"gir");
+        grupAdapter=new GrupAdapter(context,this,gruplar,"gir");
         listView.setAdapter(grupAdapter);
 
 

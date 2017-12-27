@@ -17,11 +17,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Anasayfa extends AppCompatActivity {
 
@@ -34,8 +44,10 @@ public class Anasayfa extends AppCompatActivity {
     private Kullanici girisYapanKullanici;
     private FirebaseAuth auth;
     private FirebaseUser user;
+    private DatabaseReference reference;
     private VeriTabani veriTabani;
     private NavigationView navigationView;
+
 
 
 
@@ -46,6 +58,7 @@ public class Anasayfa extends AppCompatActivity {
 
         localVeriTabani=new LocalVeriTabani(Anasayfa.this);
         veriTabani=new VeriTabani(Anasayfa.this);
+        reference= FirebaseDatabase.getInstance().getReference("paylasim");
 
         girisYapanKullanici=localVeriTabani.girisYapanKullanici();
 
@@ -59,12 +72,19 @@ public class Anasayfa extends AppCompatActivity {
         actionBar.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Fragment fragment=new Acilis();
+        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+        transaction.replace(R.id.content_frame, fragment);
+        transaction.commit();
+        MainActivity.tempFragment=fragment;
+
         navigationView = (NavigationView) findViewById(R.id.navigation);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Anasayfa.this.setTitle(item.getTitle());
                 Fragment fragment=null;
+
                 switch (item.getItemId()){
                     case R.id.cikis_yap:
                         veriTabani.cikisYap();
@@ -81,8 +101,12 @@ public class Anasayfa extends AppCompatActivity {
                     case R.id.sifreDegistir:
                         fragment=new SifreDegistir();
                         break;
+                    case R.id.anasayfa:
+                        fragment=new Acilis();
+
 
                 }
+
                 if (fragment!=null){
                     FragmentTransaction transaction=getFragmentManager().beginTransaction();
                     transaction.replace(R.id.content_frame, fragment);

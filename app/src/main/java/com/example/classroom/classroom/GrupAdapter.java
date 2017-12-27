@@ -28,10 +28,26 @@ public class GrupAdapter extends BaseAdapter {
     private LocalVeriTabani localVeriTabani;
     private VeriTabani veriTabani;
     private String fonk;//gir - kaydol
+    private Gruplar anaGruplar;
+    private TumGruplar anaTumGruplar;
+    private Grup grup;
+    private Uyarilar uyarilar;
 
 
-    public GrupAdapter(Activity activity, List<Grup> gruplar, String fonk) {
+    public GrupAdapter(Activity activity, Gruplar anaGruplar, List<Grup> gruplar, String fonk) {
         this.activity=activity;
+        this.anaGruplar=anaGruplar;
+        mInflater = (LayoutInflater) activity.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        this.gruplar = gruplar;
+        this.fonk=fonk;
+        localVeriTabani=new LocalVeriTabani(activity.getApplicationContext());
+        veriTabani=new VeriTabani(activity.getApplicationContext());;
+        uyarilar=new Uyarilar(activity);
+    }
+    public GrupAdapter(Activity activity, TumGruplar anaTumGruplar, List<Grup> gruplar, String fonk) {
+        this.activity=activity;
+        this.anaTumGruplar=anaTumGruplar;
         mInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         this.gruplar = gruplar;
@@ -61,12 +77,12 @@ public class GrupAdapter extends BaseAdapter {
     public View getView(final int position, final View convertView, ViewGroup parent) {
         View satirView;
 
+        grup=gruplar.get(position);
         satirView = mInflater.inflate(R.layout.satir_ici, null);
         TextView textView =(TextView) satirView.findViewById(R.id.textView2);
         ImageView imageView =(ImageView) satirView.findViewById(R.id.simge);
-        textView.setText(gruplar.get(position).getAd());
+        textView.setText(grup.getAd());
         imageView.setImageResource(R.drawable.ic_group_black_24dp);
-
 
         satirView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,31 +95,36 @@ public class GrupAdapter extends BaseAdapter {
                     localVeriTabani.girilecekGrupEkle(gruplar.get(position));
                     veriTabani.grupKayit(localVeriTabani.girilecekGrup());
 
-                    /*
-                    Fragment fragment = new Gruplar(activity);
+                    Fragment fragment = new Gruplar(activity,gruplar.get(position));
                     MainActivity.tempFragment = fragment;
                     if (fragment != null) {
-                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                        transaction.replace(getId(), fragment);
+                        FragmentTransaction transaction = anaTumGruplar.getFragmentManager().beginTransaction();
+                        transaction.replace(anaTumGruplar.getId(), fragment);
                         transaction.commit();
-                    }*/
+                    }
 
                 }
                 if (fonk.equals("gir"))
-                {/*
-                    Fragment fragment = new GrupIcerik();
-                    MainActivity.tempFragment = fragment;
+                {
+                    Fragment fragment = new GrupIcerik(gruplar.get(position).getId(),activity);
+                    MainActivity.tempFragment=fragment;
                     if (fragment != null) {
-                        FragmentTransaction transaction = activity.getFragmentManager().beginTransaction();
-                        transaction.replace(fragment.getId(), fragment);
+                        FragmentTransaction transaction = anaGruplar.getFragmentManager().beginTransaction();
+                        transaction.replace(anaGruplar.getId(), fragment);
                         transaction.commit();
-                    }*/
+                    }
                 }
 
             }
         });
 
         return satirView;
+    }
+
+    public void refresh(List<Grup> gruplar) {
+        this.gruplar.clear();
+        this.gruplar.addAll(gruplar);
+        notifyDataSetChanged();
     }
 
 }
